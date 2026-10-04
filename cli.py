@@ -1,5 +1,6 @@
 import stats
 import utils
+from Session import StudySession
 
 def get_menu(sessions_list):
     valid_actions = {
@@ -37,10 +38,10 @@ def check_sessions(sessions_list):
         print("There are no sessions")
     else:
         for session in sessions_list:
-            print(f"topic:\t{session["topic"]};\t"
-                  f"date:\t{session["date"]};\t"
-                  f"duration:\t{session["duration"]};\t"
-                  f"note:\t{session["note"]}")
+            print(f"topic:\t{session.topic};\t"
+                  f"date:\t{session.date};\t"
+                  f"duration:\t{session.duration};\t"
+                  f"note:\t{session.note}")
 
 
 def add_session(sessions_list):
@@ -55,7 +56,7 @@ def add_session(sessions_list):
 
     note = input("Enter note: ")
 
-    session = {"topic": topic, "date": date, "duration": duration, "note": note}
+    session = StudySession(topic, date, duration, note)
     sessions_list.append(session)
 
 
@@ -70,15 +71,16 @@ def get_info(sessions_list):
 
 
 def filter_sessions(sessions_list):
-    choice = input("Enter parameter you need to filter by: ").lower()
+    choice = input("Enter parameter you need to filter by: ").strip().lower()
     valid_choices = ["topic", "date", "duration"]
 
     if choice in valid_choices:
-        chosen_topic = input(f"Enter {choice} you need to filter by: ").lower()
+        chosen_topic = input(f"Enter {choice} you need to filter by: ").strip().lower()
+
         if choice != "duration":
-            filtered_sessions = [session for session in sessions_list if session[choice].lower() == chosen_topic]
+            filtered_sessions = [session for session in sessions_list if getattr(session, choice).strip().lower() == chosen_topic]
         else:
-            filtered_sessions = [session for session in sessions_list if session[choice] == utils.validate_duration(chosen_topic)]
+            filtered_sessions = [session for session in sessions_list if getattr(session, choice) == utils.validate_duration(chosen_topic)]
         if filtered_sessions:
             filtered_duration = stats.get_duration(filtered_sessions)
             print(filtered_sessions)
@@ -95,11 +97,10 @@ def sort_sessions(sessions_list):
     valid_choices = ["topic", "date", "duration"]
 
     if choice in valid_choices:
-        sorted_sessions = list(sorted(sessions_list, key = lambda x: x[choice]))
+        sorted_sessions = sorted(sessions_list, key = lambda x: getattr(x, choice))
         if sorted_sessions:
-            enumerated_sessions = list(enumerate(sorted_sessions, 1))
-            for session in enumerated_sessions:
-                print(tuple(session))
+            for index, session in enumerate(sorted_sessions):
+                print(f"#{index}, {session}\t")
         else:
             print("No sessions found\n")
     else:
