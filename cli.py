@@ -56,7 +56,12 @@ def add_session(sessions_list):
 
     note = input("Enter note: ")
 
-    session = StudySession(topic, date, duration, note)
+    try:
+        session = StudySession(topic, date, duration, note)
+    except (TypeError, ValueError) as error:
+        print(f"Skipped invalid session; Reason: {error}")
+        return
+
     sessions_list.append(session)
 
 
