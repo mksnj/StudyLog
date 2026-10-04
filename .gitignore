@@ -1,0 +1,11 @@
+.venv/
+.idea/
+__pycache__/
+*.pyc
+
+sessions.json
+cum.json
+
+trash/
+
+review.py
