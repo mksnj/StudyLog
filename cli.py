@@ -2,7 +2,7 @@ import stats
 import utils
 from Session import StudySession
 
-def get_menu(sessions_list):
+def get_menu(sessions_list: list[StudySession]) -> None:
     valid_actions = {
         "1": check_sessions,
         "2": add_session,
@@ -32,7 +32,7 @@ def get_menu(sessions_list):
             print("Invalid choice\n")
 
 
-def check_sessions(sessions_list):
+def check_sessions(sessions_list: list[StudySession]) -> None:
     print("\n--- Checking sessions: ---")
     if not sessions_list:
         print("There are no sessions")
@@ -44,7 +44,7 @@ def check_sessions(sessions_list):
                   f"note:\t{session.note}")
 
 
-def add_session(sessions_list):
+def add_session(sessions_list: list[StudySession]) -> None:
     topic = input("Enter topic: ")
     date = input("Enter date: ")
     duration = input("Enter duration: ")
@@ -65,7 +65,7 @@ def add_session(sessions_list):
     sessions_list.append(session)
 
 
-def get_info(sessions_list):
+def get_info(sessions_list: list[StudySession]) -> None:
     total_duration = stats.get_duration(sessions_list)
     print("there are ", len(sessions_list), " sessions")
     if sessions_list:
@@ -75,29 +75,47 @@ def get_info(sessions_list):
     print("btw this prog was made by frog 0_o")
 
 
-def filter_sessions(sessions_list):
-    choice = input("Enter parameter you need to filter by: ").strip().lower()
+def filter_sessions(
+        sessions_list: list[StudySession],
+        choice: str | None = None,
+        chosen_topic: str | int | None = None
+) -> list[StudySession]:
+
+    if choice is None:
+        choice = input("Enter parameter you need to filter by: ")
+    choice = choice.strip().lower()
     valid_choices = ["topic", "date", "duration"]
 
     if choice in valid_choices:
-        chosen_topic = input(f"Enter {choice} you need to filter by: ").strip().lower()
+        if chosen_topic is None:
+            chosen_topic = input(f"Enter {choice} you need to filter by: ")
+
 
         if choice != "duration":
+            if not isinstance(chosen_topic, str):
+                raise TypeError("Invalid type: value must be a string")
+
+            chosen_topic = chosen_topic.strip().lower()
             filtered_sessions = [session for session in sessions_list if getattr(session, choice).strip().lower() == chosen_topic]
         else:
-            filtered_sessions = [session for session in sessions_list if getattr(session, choice) == utils.validate_duration(chosen_topic)]
+            validated_duration = utils.validate_duration(chosen_topic)
+            if validated_duration is None:
+                raise ValueError("Invalid duration")
+            filtered_sessions = [session for session in sessions_list if getattr(session, choice) == validated_duration]
         if filtered_sessions:
             filtered_duration = stats.get_duration(filtered_sessions)
+
             print(filtered_sessions)
             print("duration of this sessions = ", filtered_duration, "mins")
+            return filtered_sessions
         else:
             print("No sessions found\n")
+            return []
     else:
-        print("Invalid choice")
-        return
+        raise ValueError("Invalid choice of topic")
 
 
-def sort_sessions(sessions_list):
+def sort_sessions(sessions_list: list[StudySession]) -> None:
     choice = input("Enter parameter you need to sort by: ").lower()
     valid_choices = ["topic", "date", "duration"]
 

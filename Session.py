@@ -1,40 +1,33 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class StudySession:
-    def __init__(self, topic, date, duration, note=""):
-        if not isinstance(topic, str):
+    topic: str
+    date: str
+    duration: int
+    note: str = ""
+
+    def __post_init__(self):
+        if not isinstance(self.topic, str):
             raise TypeError("topic must be a string")
-        if not topic:
+        if not self.topic:
             raise ValueError("topic is required")
 
-        if not isinstance(date, str):
+        if not isinstance(self.date, str):
             raise TypeError("date must be a string")
-        if not date:
+        if not self.date:
             raise ValueError("date is required")
 
-        if not isinstance(duration, int):
+        if not isinstance(self.duration, int):
             raise TypeError("duration must be an integer")
-        if duration <= 0:
+        if self.duration <= 0:
             raise ValueError("duration must be positive")
 
-        self.topic = topic
-        self.date = date
-        self.duration = duration
-        self.note = note
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str | int]:
         return {"topic": self.topic,
                 "date": self.date,
                 "duration": self.duration,
                 "note": self.note}
 
-    def __str__(self):
-        return (f"{self.topic} — {self.date}, "
-                f"{self.duration} min, note: {self.note}")
-
-    def __repr__(self):
-        return (
-            f"StudySession("
-            f"topic={self.topic!r}, "
-            f"date={self.date!r}, "
-            f"duration={self.duration!r}, "
-            f"note={self.note!r})"
-        )

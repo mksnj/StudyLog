@@ -1,11 +1,11 @@
-def validate_duration(duration):
+def validate_duration(duration: str| int| None) -> int | None:
     try:
-        duration = int(duration)
-    except ValueError:
+        validated_duration = int(duration)
+    except (ValueError, TypeError):
         return None
     else:
-        if duration > 0:
-            return duration
+        if validated_duration > 0:
+            return validated_duration
         else:
             return None
 

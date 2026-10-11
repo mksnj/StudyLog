@@ -1,13 +1,15 @@
 import json
 from pathlib import Path
 from Session import StudySession
+import logging
 
 
+logger = logging.getLogger(__name__)
 default_path = "sessions.json"
 
 
-def load_sessions(path = default_path):
-    sessions_list = []
+def load_sessions(path: str | Path = default_path) -> list[StudySession] | None:
+    sessions_list: list[StudySession] = []
     raw_sessions_list = []
     if Path(path).is_file():
         try:
@@ -24,16 +26,19 @@ def load_sessions(path = default_path):
 
                 try:
                     session = StudySession(topic, date, duration, note)
-                except (TypeError, ValueError) as error:
-                    print(f"Skipped invalid session: {raw_session}")
-                    print(f"Reason: {error}")
+                except (TypeError, ValueError) as error_reason:
+                    logger.warning(
+                        "Skipped invalid session: %s; reason: %s",
+                        raw_session,
+                        error_reason,
+                    )
                 else:
                     sessions_list.append(session)
 
     return sessions_list
 
 
-def save_sessions(sessions_list, path = default_path):
+def save_sessions(sessions_list: list[StudySession], path: str | Path = default_path) -> None:
     output_sessions_list = []
     for session in sessions_list:
         output_sessions_list.append(session.to_dict())
@@ -44,6 +49,4 @@ def save_sessions(sessions_list, path = default_path):
             indent=2,
             ensure_ascii=False
         )
-
-
 
