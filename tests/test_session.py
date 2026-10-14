@@ -5,8 +5,8 @@ from stats import get_duration
 from stats import get_duration_by_date
 from cli import filter_sessions
 from utils import validate_duration
-from storage import load_sessions
-from storage import save_sessions
+from legacy.storage import load_sessions
+from legacy.storage import save_sessions
 
 
 def test_session():

@@ -48,7 +48,9 @@ def add_session(session: StudySession,
 def load_sessions(path: str | Path = default_path) -> list[StudySession]:
     connection = sqlite3.connect(path)
     try:
-        cursor = connection.execute("SELECT topic, date, duration, note FROM study_sessions")
+        cursor = connection.execute("SELECT topic, date, duration, note "
+                                    "FROM study_sessions "
+                                    "ORDER BY id")
         sessions = cursor.fetchall()
         res_sessions: list[StudySession] = []
         for session in sessions:

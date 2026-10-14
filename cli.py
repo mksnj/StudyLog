@@ -1,8 +1,12 @@
 import stats
 import utils
 from Session import StudySession
+from collections.abc import Callable
 
-def get_menu(sessions_list: list[StudySession]) -> None:
+def get_menu(
+    sessions_list: list[StudySession],
+    save_session: Callable[[StudySession], None]
+) -> None:
     valid_actions = {
         "1": check_sessions,
         "2": add_session,
@@ -25,7 +29,10 @@ def get_menu(sessions_list: list[StudySession]) -> None:
         choice = input("Enter your choice: ")
         if choice in valid_actions:
             action = valid_actions.get(choice)
-            action(sessions_list)
+            if choice == "2":
+                action(sessions_list, save_session)
+            else:
+                action(sessions_list)
         elif choice == "6":
             flag = False
         else:
@@ -43,8 +50,10 @@ def check_sessions(sessions_list: list[StudySession]) -> None:
                   f"duration:\t{session.duration};\t"
                   f"note:\t{session.note}")
 
-
-def add_session(sessions_list: list[StudySession]) -> None:
+def add_session(
+    sessions_list: list[StudySession],
+    save_session: Callable[[StudySession], None]
+) -> None:
     topic = input("Enter topic: ")
     date = input("Enter date: ")
     duration = input("Enter duration: ")
@@ -62,6 +71,7 @@ def add_session(sessions_list: list[StudySession]) -> None:
         print(f"Skipped invalid session; Reason: {error}")
         return
 
+    save_session(session)
     sessions_list.append(session)
 
 

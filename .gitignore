@@ -2,7 +2,10 @@
 .idea/
 __pycache__/
 *.pyc
-
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
 sessions.json
 cum.json
 

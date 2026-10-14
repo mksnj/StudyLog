@@ -1,5 +1,4 @@
 import cli
-import storage
 import sqlite_storage
 import logging
 
@@ -18,19 +17,14 @@ def main():
     if not filepath:
         filepath = sqlite_storage.default_path
 
-    # sqlite_storage.add_session(
-    #     StudySession("Databases",
-    #                  "2026-10-13",
-    #                  90,
-    #                  "sqlite3"),
-    #     filepath)
-
+    sqlite_storage.init_db(filepath)
     sessions_list = sqlite_storage.load_sessions(filepath)
-    if sessions_list is None:
-        print("file is wrong")
-        return
-    cli.get_menu(sessions_list)
-    storage.save_sessions(sessions_list, filepath)
+
+    def save_session(session: StudySession) -> None:
+        sqlite_storage.add_session(session, filepath)
+
+    cli.get_menu(sessions_list, save_session)
+
 
 
 if __name__ == "__main__":

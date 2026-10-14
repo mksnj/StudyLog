@@ -5,7 +5,7 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-default_path = "sessions.json"
+default_path = "../sessions.json"
 
 
 def load_sessions(path: str | Path = default_path) -> list[StudySession] | None:
